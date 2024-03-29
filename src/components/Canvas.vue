@@ -8,6 +8,7 @@ import {
   faRotateRight,
 } from "@fortawesome/free-solid-svg-icons";
 import AddImageHandler from "./AddImageHandler.vue";
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const context = ref<CanvasRenderingContext2D | null>(null);
@@ -274,6 +275,16 @@ const handleOpacityChange = (e: Event) => {
   }
 };
 
+const handleDelete = () => {
+  if (selectedImage.value) {
+    const idx = images.findIndex((img) => img.id === selectedImage.value?.id);
+    if (idx >= 0) {
+      images.splice(idx, 1);
+      render();
+    }
+  }
+};
+
 onMounted(() => {
   loadState();
 
@@ -308,18 +319,6 @@ onBeforeUnmount(() => {
         <FontAwesomeIcon :icon="faRotateRight" />
       </button>
       <span>
-        {{
-          selectedImage ? selectedImage.label || "No label" : "None selected"
-        }}
-      </span>
-      <button
-        class="skinny"
-        :disabled="selectedImage === null"
-        @click="handleRename"
-      >
-        <FontAwesomeIcon :icon="faPencil" />
-      </button>
-      <span>
         <FontAwesomeIcon :icon="faCircleHalfStroke" />
         <input
           type="range"
@@ -331,6 +330,25 @@ onBeforeUnmount(() => {
           step="0.1"
         />
       </span>
+      <button
+        class="skinny"
+        :disabled="selectedImage === null"
+        @click="handleDelete"
+      >
+        <FontAwesomeIcon :icon="faTrashCan" />
+      </button>
+      <span>
+        {{
+          selectedImage ? selectedImage.label || "No label" : "None selected"
+        }}
+      </span>
+      <button
+        class="skinny"
+        :disabled="selectedImage === null"
+        @click="handleRename"
+      >
+        <FontAwesomeIcon :icon="faPencil" />
+      </button>
     </div>
     <div ref="canvasContainer" class="canvas-container">
       <canvas
